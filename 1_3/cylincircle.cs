@@ -46,6 +46,6 @@ public class cylincircle : rands {
 			yield return new WaitForSeconds(0.2f);
 			t+=15;
 		}
-
+    //test
 	}
 }
