@@ -52,6 +52,7 @@ public class HatateParent : MonoBehaviour {
 		shooter3 = Resources.Load("shooter3",typeof(GameObject)) as GameObject;
 		b3_v = Resources.Load("b3_v",typeof(GameObject)) as GameObject;
 
+
 		//load some shooter
 	}
 
@@ -99,7 +100,7 @@ public class HatateParent : MonoBehaviour {
 		}
 
 		//debug setting
-		state = 5;
+		state = 6;
 
 		if(state == 2)
 		{
@@ -625,7 +626,7 @@ public class HatateParent : MonoBehaviour {
 	
 	IEnumerator boss1_3_3()
 	{
-		//TO DO
+
 		StartCoroutine(counter3_3_1(60));
 
 		clockWise = 1;
@@ -737,6 +738,49 @@ public class HatateParent : MonoBehaviour {
 	}
 	IEnumerator boss1_3_spell_3()
 	{
+		clockWise = -1;
+		hatate.GetComponent<Boss1_3>().setTargetRotation(0,NEGATIVE_Y_ROTATION,NEGATIVE_Z_ROTATION);
+		
+		hatate.GetComponent<Boss1_3>().setIsTurning(true);
+		hatate.SendMessage("turnAroundDec",SendMessageOptions.DontRequireReceiver);
+		wspeed = 60;
+
+		while(true)
+		{
+			if(absGetAngleDif(transform.position,player.transform.position)< 45)
+			{
+				while(wspeed > 30)
+				{
+					wspeed *= 0.6f;
+					yield return new WaitForSeconds(0.2f);
+				}
+				hatate.GetComponent<Boss1_3>().steadyShootType = true;
+				hatate.GetComponent<Boss1_3>().triggerAttackS();
+
+				break;
+			}
+			else{
+				yield return new WaitForSeconds(0.2f);
+			}
+		}
+
+		while(wspeed < 15)
+		{
+			wspeed +=5;
+			yield return new WaitForSeconds(0.2f);
+		}
+
+		invincible = true;
+		transPivot = getNearToFarPivot();
+		moveState = OUTTER_INNER_TRANSIT;
+		
+		hatate.SendMessage("acc_Dec",SendMessageOptions.DontRequireReceiver);
+		
+		yield return new WaitForSeconds((360 / wspeed) / 2);
+		
+		laneState = FAR_LANE;
+		moveState = NORMAL;
+
 		StartCoroutine(counter3_3_2(60));
 		textlist.SendMessage("addtext",spellcardname[2],SendMessageOptions.DontRequireReceiver);
 
@@ -747,16 +791,26 @@ public class HatateParent : MonoBehaviour {
 		cam.GetComponent<camcontrol>().setSize(0);
 
 		moveState = CAM_CONTROLLER;
-		wspeed = 25.0f;
+		wspeed = 15.0f;
 		yspeed = 3.0f;
 
 
 
 
+
+		GameObject bb = (GameObject)Instantiate (shooter3, player.transform.position, Quaternion.identity);
+		bb.AddComponent("BulletJailShooter");
+		bb.transform.parent = player.transform;
+
 		while(!finish3_3_2)
-		{
+		{	
 			yield return new WaitForSeconds(1.0f);
+
 		}
+
+		hatate.GetComponent<Boss1_3>().DestroyGhostFire();
+		bb.GetComponent<BulletJailShooter>().setStop(true);
+
 		//state++;
 	}
 	

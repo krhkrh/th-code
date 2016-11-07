@@ -42,8 +42,9 @@ public class NineCutSubShooter_1 : shooterbasic
 				bb.GetComponent<rands> ().up = false;
 				bb.GetComponent<rands> ().type = 1;
 
+
 				if(i == 7) i=0;
-				else i++;
+				else {i++;if(i%3==0)audio.Play();}
 
 				yield return new WaitForSeconds(0.3f);
 			}
@@ -55,10 +56,11 @@ public class NineCutSubShooter_1 : shooterbasic
 				bb.GetComponent<rands> ().yspeed = 0;
 				bb.GetComponent<rands> ().clockwise = false;
 				bb.GetComponent<rands> ().type = 1;
-				
+
+
 				if(i == 7) i=0;
-				else i++;
-				
+				else {i++;if(i%3==0)audio.Play();}
+
 				yield return new WaitForSeconds(0.3f);
 			}
 

@@ -193,8 +193,23 @@ far lane and near lane
 	{
 		return new Vector3(v.x, 0, v.z);
 	}
+	GameObject ghostFire;
+	public void DestroyGhostFire()
+	{
+		Destroy(ghostFire);
+	}
+	public bool steadyShootType = false; 
 	void steadyShoot()
 	{
+		if(steadyShootType)
+		{
+			ghostFire = (GameObject)Instantiate (b3_v, player.transform.position, Quaternion.Euler(270,0,0));
+
+			ghostFire.GetComponent<Collider>().enabled = false;
+			ghostFire.transform.parent = player.transform;
+
+		}
+		else{
 		GameObject bb,shooter;
 
 		bb = (GameObject)Instantiate (b3_v_finger, leftFingerTip.transform.position ,Quaternion.LookRotation(player.transform.position - leftFingerTip.transform.position));
@@ -206,6 +221,7 @@ far lane and near lane
 		shooter.AddComponent<Shooter3_B_windCore>();
 
 		shooter.transform.parent = bb.transform;
+		}
 
 	}
 
