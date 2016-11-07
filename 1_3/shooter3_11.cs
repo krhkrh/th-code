@@ -51,7 +51,7 @@ public class shooter3_11 : shooterbasic {
 			audio.Play ();
 			for(int j=0;j<8;j++)
 			{
-				bb = (GameObject)Instantiate (bt2[i%8], Quaternion.Euler(0,i*11,0)*v8[j]+va ,Quaternion.identity );
+				bb = (GameObject)Instantiate (bt2[i%8], Quaternion.Euler(0,i*10,0)*v8[j]+va ,Quaternion.identity );
 				bb.AddComponent ("cogbehavior");
 				bb.GetComponent<cogbehavior> ().cogtype=false;
 
@@ -59,11 +59,15 @@ public class shooter3_11 : shooterbasic {
 
 			for(int j=0;j<8;j++)
 			{
-				bb = (GameObject)Instantiate (bt2[i%8], Quaternion.Euler(0,-i*11,0)*v8[j]+vb ,Quaternion.identity );
+				bb = (GameObject)Instantiate (bt2[i%8], Quaternion.Euler(0,-i*10,0)*v8[j]+vb ,Quaternion.identity );
 				bb.AddComponent ("cogbehavior");
 				bb.GetComponent<cogbehavior> ().cogtype=true;
 					
 			}
+
+			i++;
+			if(i==36)
+				i=0;
 
 			yield return new WaitForSeconds(1.0f);
 		}
