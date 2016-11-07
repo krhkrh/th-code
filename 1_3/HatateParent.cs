@@ -166,6 +166,16 @@ public class HatateParent : MonoBehaviour {
 		{
 			yield return new WaitForSeconds(0.5f);
 		}
+		if(state == 9)
+		{
+			setBossReady();
+			StartCoroutine(takeHit());
+		}
+		while(state == 9)
+		{
+			yield return new WaitForSeconds(0.5f);
+		}
+
 		invincible = true;
 
 		//end game routines
@@ -863,6 +873,17 @@ public class HatateParent : MonoBehaviour {
 		moveState = BACK_TO_STANDARD;
 
 	}
+
+	IEnumerator takeHit()
+	{
+		while(wspeed>10)
+		{
+			wspeed -=5;
+			yield return new WaitForSeconds(0.5f);
+		}
+		state++;
+	}
+
 
 	void setstate(int i)
 	{
