@@ -30,7 +30,7 @@ public class HatateParent : MonoBehaviour {
 	public int moveState = -1;
 	public int state = 0;
 	private Vector3 transPivot;
-	const int  OUTTER_INNER_TRANSIT = 98,NORMAL = 1,CAM_CONTROLLER = 2;
+	const int  OUTTER_INNER_TRANSIT = 98,NORMAL = 1,CAM_CONTROLLER = 2,BACK_TO_STANDARD= 3;
 	public float yspeed=0,wspeed=0;
 	
 	public int clockWise = 1 ,up =1;
@@ -822,13 +822,46 @@ public class HatateParent : MonoBehaviour {
 	}
 	IEnumerator boss1_3_spell_4()
 	{
-		StartCoroutine(counter3_4_2 (10));
+		//TODO:test
+
+		textlist.SendMessage("addtext",spellcardname[3],SendMessageOptions.DontRequireReceiver);
+		
+		textlist.SendMessage("addtext",camSize[2],SendMessageOptions.DontRequireReceiver);
+		
+		cam.GetComponent<MeshRenderer>().enabled = true;
+		cam.GetComponent<Collider>().enabled = true;
+		cam.GetComponent<camcontrol>().setSize(2);
+		hatate.GetComponent<Boss1_3>().turnAroundDec();
+		wspeed = 45;
+
+		StartCoroutine(counter3_4_2 (60));
+
+		GameObject bb = (GameObject)Instantiate (shooter3, Vector3.zero, Quaternion.identity);
+		bb.AddComponent("shooter3_11");
+		
 		while(!finish3_4_2)
 		{
 			yield return new WaitForSeconds(1.0f);
 		
 		}
+
+		bb.GetComponent<shooter3_11>().setStop(true);
+
+		cam.GetComponent<MeshRenderer>().enabled = false;
+		cam.GetComponent<Collider>().enabled = false;
+
+		transPivot = getFarToNearPivot();
+		moveState = OUTTER_INNER_TRANSIT;
+		wspeed = 45;
+		yspeed = 0;
+		yield return new WaitForSeconds((360 / wspeed) / 2);
+		laneState = NEAR_LANE;
+		moveState = NORMAL;
+
 		state++;
+
+		moveState = BACK_TO_STANDARD;
+
 	}
 
 	void setstate(int i)
@@ -910,6 +943,19 @@ public class HatateParent : MonoBehaviour {
 
 			transform.RotateAround(Vector3.zero, Vector3.up,clockWise * wspeed * Time.deltaTime);
 			transform.Translate(Vector3.up * yspeed * Time.deltaTime,Space.World);
+		}
+		else if (moveState == BACK_TO_STANDARD){
+			//TODO:test
+			yspeed = 7 - transform.position.y;
+			if(yspeed < 1)
+			{
+				yspeed = 0;
+				moveState = NORMAL;
+			}
+
+			transform.RotateAround(Vector3.zero, Vector3.up,clockWise * wspeed * Time.deltaTime);
+			transform.Translate(Vector3.up * yspeed * Time.deltaTime,Space.World);
+
 		}
 	}
 

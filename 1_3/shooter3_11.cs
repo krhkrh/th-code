@@ -34,10 +34,18 @@ public class shooter3_11 : shooterbasic {
 
 	}
 
+	bool stop = false;
+	public void setStop(bool s)
+	{
+		this.stop = s;
+	}
+
+
 	public override IEnumerator mainroute ()
 	{
 		GameObject bb;
-		for(int i=0;i<30;i++)
+		int i=0;
+		while(!stop)
 		{
 
 			audio.Play ();
@@ -59,5 +67,6 @@ public class shooter3_11 : shooterbasic {
 
 			yield return new WaitForSeconds(1.0f);
 		}
+		halt();
 	}
 }
