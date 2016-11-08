@@ -251,22 +251,14 @@ public class root1_3 : MonoBehaviour {
 
 		StartCoroutine(route3_conversation_1());
 
+		while(!bossfin)
+		{
+			yield return new WaitForSeconds(1.0f);
+		}
 
-
-		/*
-		 *  boss creation and setting in route3_conversation_1
-		 * 
-		 * 	then the game starts
-		 * 
-		 * 	when the game ends boss report to root
-		 * 	and start route3_conversation_2
-		 * 
-		 */
-
-	//	StartCoroutine(route3_conversation_2());
+		StartCoroutine(route3_conversation_2());
 
 		//then create the statge 4;
-
 
 	}
 
@@ -559,6 +551,11 @@ public class root1_3 : MonoBehaviour {
 		hatateCam.GetComponent<Collider>().enabled = false;
 
 		bb.GetComponent<HatateParent>().cam = hatateCam;
+		bb.GetComponent<HatateParent>().root = gameObject;
+		bb.GetComponent<HatateParent>().player = this.player;
+		bb.GetComponent<HatateParent>().textlist = this.textlist;
+		bb.GetComponent<HatateParent>().conversationManager = this.conversationmanager1_3;
+
 
 		manager.SendMessage("findboss",SendMessageOptions.DontRequireReceiver);
 		while(i<22&&!skip)
@@ -575,7 +572,7 @@ public class root1_3 : MonoBehaviour {
 			}
 		}
 		conversationend=true;
-		manager.SendMessage("skipconversation",SendMessageOptions.DontRequireReceiver);
+		manager.SendMessage("skipconversation1",SendMessageOptions.DontRequireReceiver);
 
 		bb.SendMessage("setstate",1,SendMessageOptions.DontRequireReceiver);
 
@@ -587,7 +584,7 @@ public class root1_3 : MonoBehaviour {
 	IEnumerator route3_conversation_2()
 	{
 		skip=false;
-		//set conversation
+		//TODO:set conversation starting number
 		int i=1,j=0;
 		player.SendMessage("setconversationmode",true,SendMessageOptions.DontRequireReceiver);
 		
@@ -605,7 +602,7 @@ public class root1_3 : MonoBehaviour {
 			}
 		}
 		conversationend=true;
-		manager.SendMessage("skipconversation",SendMessageOptions.DontRequireReceiver);
+		manager.SendMessage("skipconversation2",SendMessageOptions.DontRequireReceiver);
 		
 		player.SendMessage("setconversationmode",false,SendMessageOptions.DontRequireReceiver);
 		yield return new WaitForSeconds(1.0f);

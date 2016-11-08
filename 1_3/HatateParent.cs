@@ -24,7 +24,7 @@ public class HatateParent : MonoBehaviour {
 	private const int POSITIVE_FAR = 0, POSITIVE_NEAR = 1,NEGATIVE_FAR = 2, NEGATIVE_MEAR = 3;
 
 	public bool finish3_1_1 = false,finish3_1_2 = false,finish3_2_1 = false,finish3_2_2 = false
-		,finish3_3_1 = false,finish3_3_2 = false,finish3_4_1 = false,finish3_4_2 = false;
+		,finish3_3_1 = false,finish3_3_2 = false,finish3_4_1 = false,finish3_4_2 = false,finish_take_hit = false;
 	
 	//motion factors and functional state
 	public int moveState = -1;
@@ -44,15 +44,8 @@ public class HatateParent : MonoBehaviour {
 
 	void Awake()
 	{
-
-		player = GameObject.FindGameObjectWithTag("Player");
-		root = GameObject.FindGameObjectWithTag("GameController");
-		conversationManager = GameObject.FindGameObjectWithTag("manager");
-		textlist = GameObject.FindGameObjectWithTag("textlist");
 		shooter3 = Resources.Load("shooter3",typeof(GameObject)) as GameObject;
 		b3_v = Resources.Load("b3_v",typeof(GameObject)) as GameObject;
-
-
 		//load some shooter
 	}
 
@@ -100,7 +93,7 @@ public class HatateParent : MonoBehaviour {
 		}
 
 		//debug setting
-		state = 6;
+		state = 9;
 
 		if(state == 2)
 		{
@@ -178,7 +171,19 @@ public class HatateParent : MonoBehaviour {
 
 		invincible = true;
 
-		//end game routines
+	
+		while(wspeed>1)
+		{
+			wspeed--;
+			yield return new WaitForSeconds(0.2f);
+		}
+
+		wspeed = 0;
+		hatate.GetComponent<Boss1_3>().setTargetRotation(0,0);
+		hatate.GetComponent<Boss1_3>().setIsTurning(true);
+
+
+
 		root.SendMessage("bossfinish",SendMessageOptions.DontRequireReceiver);
 	}
 	
@@ -821,7 +826,7 @@ public class HatateParent : MonoBehaviour {
 		hatate.GetComponent<Boss1_3>().DestroyGhostFire();
 		bb.GetComponent<BulletJailShooter>().setStop(true);
 
-		//state++;
+		state++;
 	}
 	
 	IEnumerator boss1_3_4()
@@ -842,7 +847,12 @@ public class HatateParent : MonoBehaviour {
 		cam.GetComponent<Collider>().enabled = true;
 		cam.GetComponent<camcontrol>().setSize(2);
 		hatate.GetComponent<Boss1_3>().turnAroundDec();
-		wspeed = 45;
+		moveState = CAM_CONTROLLER;
+		wspeed = 60;
+		if(transform.position.y > 7)
+			yspeed = -2;
+		else yspeed = 2;
+
 
 		StartCoroutine(counter3_4_2 (60));
 
@@ -860,12 +870,15 @@ public class HatateParent : MonoBehaviour {
 		cam.GetComponent<MeshRenderer>().enabled = false;
 		cam.GetComponent<Collider>().enabled = false;
 
-		transPivot = getFarToNearPivot();
-		moveState = OUTTER_INNER_TRANSIT;
-		wspeed = 45;
-		yspeed = 0;
-		yield return new WaitForSeconds((360 / wspeed) / 2);
-		laneState = NEAR_LANE;
+		if(laneState == FAR_LANE)
+		{
+			transPivot = getFarToNearPivot();
+			moveState = OUTTER_INNER_TRANSIT;
+			wspeed = 45;
+			yspeed = 0;
+			yield return new WaitForSeconds((360 / wspeed) / 2);
+			laneState = NEAR_LANE;
+		}
 		moveState = NORMAL;
 
 		state++;
@@ -881,6 +894,12 @@ public class HatateParent : MonoBehaviour {
 			wspeed -=5;
 			yield return new WaitForSeconds(0.5f);
 		}
+
+		while(!finish_take_hit)
+		{
+			yield return new WaitForSeconds(1.0f);
+		}
+
 		state++;
 	}
 
@@ -956,10 +975,10 @@ public class HatateParent : MonoBehaviour {
 		}
 		else if (moveState == CAM_CONTROLLER)
 		{
-			if (transform.position.y>20)
+			if (transform.position.y>19)
 			{yspeed=-yspeed;}
 			
-			if (transform.position.y<-5)
+			if (transform.position.y<-4)
 			{yspeed=-yspeed;}
 
 			transform.RotateAround(Vector3.zero, Vector3.up,clockWise * wspeed * Time.deltaTime);
@@ -1253,8 +1272,10 @@ public class HatateParent : MonoBehaviour {
 			}
 			else
 			{
+				if(state == 9)
+					finish_take_hit = true;
 
-				hatate.GetComponent<Boss1_3>().triggerToBreak();
+				hatate.GetComponent<Boss1_3>().triggerEnding();
 				hatate.GetComponent<Boss1_3>().playOneShot(NORMAL_END);
 				invincible=true;
 

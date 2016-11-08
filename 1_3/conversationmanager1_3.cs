@@ -44,13 +44,17 @@ public class conversationmanager1_3 : MonoBehaviour {
 		}
 	}
 
-	void skipconversation()
+	public void skipconversation1()
 	{
-		display=false;
-		//if(bossgone==false)
-		//	boss.SendMessage("clear",SendMessageOptions.DontRequireReceiver);
+		display = false;
+		textnumber = 22;
+		p1=7;p2=14;
 	}
 
+	public void skipconversation2()
+	{
+		display = false;
+	}
 
 	void Awake()
 	{

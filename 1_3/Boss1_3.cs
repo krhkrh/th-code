@@ -60,6 +60,7 @@ far lane and near lane
 	int downToMove_trigger = Animator.StringToHash("downToMove");
 	int toBreak_trigger = Animator.StringToHash("toBreak");
 	int fightUp_trigger = Animator.StringToHash("fightUp");
+	int ending_trigger = Animator.StringToHash("toEnding");
 
 	public bool isTurning = false;
 	private Quaternion targetRotation;
@@ -146,6 +147,12 @@ far lane and near lane
 		anim.SetTrigger(attack_s_trigger);
 
 	}
+
+	public void triggerEnding()
+	{
+		anim.SetTrigger(ending_trigger);
+	}
+
 
 	public void triggerUpToMove()
 	{
