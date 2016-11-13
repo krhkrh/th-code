@@ -71,9 +71,17 @@ public class HatateParent : MonoBehaviour {
 	IEnumerator mainRoutine()
 	{
 		//state moveState
-		moveState = 0;
-		yield return new WaitForSeconds(3.0f);
+		moveState = NORMAL;
+		invincible = true;
+		yspeed = -8;
 
+		while(yspeed < -0.5)
+		{
+			yspeed += 0.3f;
+			yield return new WaitForSeconds(0.1f);
+		}
+
+		yspeed = 0;
 		hatate.GetComponent<Boss1_3>().triggerPrepare();
 
 		while(state==0)
@@ -81,6 +89,7 @@ public class HatateParent : MonoBehaviour {
 			yield return new WaitForSeconds(0.5f);
 		}
 
+		invincible = false;
 		if(state == 1)
 		{
 			hatate.GetComponent<Boss1_3>().triggerStart();
@@ -93,7 +102,7 @@ public class HatateParent : MonoBehaviour {
 		}
 
 		//debug setting
-		state = 9;
+		//state = 6;
 
 		if(state == 2)
 		{
@@ -179,14 +188,37 @@ public class HatateParent : MonoBehaviour {
 		}
 
 		wspeed = 0;
+		yspeed = 0;
 		hatate.GetComponent<Boss1_3>().setTargetRotation(0,0);
 		hatate.GetComponent<Boss1_3>().setIsTurning(true);
-
-
+		moveState = NORMAL;
 
 		root.SendMessage("bossfinish",SendMessageOptions.DontRequireReceiver);
 	}
-	
+
+	public void setYspeed(float y)
+	{
+		StartCoroutine(adjustYSpeed(y));
+	}
+	IEnumerator adjustYSpeed(float y)
+	{
+		while(yspeed > y)
+		{
+			yspeed -= 0.2f;
+			yield return new WaitForSeconds(0.4f);
+		}
+
+		while(gameObject.transform.position.y > -5)
+		{
+			yield return new WaitForSeconds(1.0f);
+		}
+
+		Destroy(cam);
+		Destroy(gameObject);
+
+	}
+
+
 	const int FAR_LANE = 1, NEAR_LANE = 2;
 	const float ZERO = 0f;
 	public int laneState = 0;
@@ -203,7 +235,7 @@ public class HatateParent : MonoBehaviour {
 	IEnumerator boss1_3_1()
 	{
 
-		StartCoroutine(counter3_1_1(10));//60
+		StartCoroutine(counter3_1_1(60));//60
 		moveState = NORMAL;
 		yspeed = 0;
 		wspeed = 60;
@@ -406,7 +438,6 @@ public class HatateParent : MonoBehaviour {
 
 	IEnumerator boss1_3_spell_1()
 	{
-		textlist.SendMessage("addtext",spellcardname[0],SendMessageOptions.DontRequireReceiver);
 
 		StartCoroutine(counter3_1_2(60));//50
 		GameObject bb;
@@ -424,7 +455,10 @@ public class HatateParent : MonoBehaviour {
 		moveState = CAM_CONTROLLER;
 		yspeed = 3;
 
+		hatate.GetComponent<Boss1_3>().playOneShot(SPELLCARD);
 		textlist.SendMessage("addtext",camSize[0],SendMessageOptions.DontRequireReceiver);
+		textlist.SendMessage("addtext",spellcardname[0],SendMessageOptions.DontRequireReceiver);
+
 		cam.GetComponent<MeshRenderer>().enabled = true;
 		cam.GetComponent<Collider>().enabled = true;
 
@@ -621,6 +655,7 @@ public class HatateParent : MonoBehaviour {
 		cam.GetComponent<Collider>().enabled = true;
 		cam.GetComponent<camcontrol>().setSize(1);
 
+		hatate.GetComponent<Boss1_3>().playOneShot(SPELLCARD);
 		GameObject bb;
 		bb = (GameObject)Instantiate (shooter3, player.transform.position, Quaternion.identity);
 		bb.AddComponent("NineCutShooter");
@@ -797,6 +832,7 @@ public class HatateParent : MonoBehaviour {
 		moveState = NORMAL;
 
 		StartCoroutine(counter3_3_2(60));
+		hatate.GetComponent<Boss1_3>().playOneShot(SPELLCARD);
 		textlist.SendMessage("addtext",spellcardname[2],SendMessageOptions.DontRequireReceiver);
 
 		textlist.SendMessage("addtext",camSize[0],SendMessageOptions.DontRequireReceiver);
@@ -807,7 +843,7 @@ public class HatateParent : MonoBehaviour {
 
 		moveState = CAM_CONTROLLER;
 		wspeed = 15.0f;
-		yspeed = 3.0f;
+		yspeed = 4.0f;
 
 
 
@@ -837,8 +873,8 @@ public class HatateParent : MonoBehaviour {
 	}
 	IEnumerator boss1_3_spell_4()
 	{
-		//TODO:test
 
+		hatate.GetComponent<Boss1_3>().playOneShot(SPELLCARD);
 		textlist.SendMessage("addtext",spellcardname[3],SendMessageOptions.DontRequireReceiver);
 		
 		textlist.SendMessage("addtext",camSize[2],SendMessageOptions.DontRequireReceiver);
@@ -976,10 +1012,20 @@ public class HatateParent : MonoBehaviour {
 		else if (moveState == CAM_CONTROLLER)
 		{
 			if (transform.position.y>19)
-			{yspeed=-yspeed;}
+			{
+				if(yspeed > 0)
+				{
+					yspeed=-yspeed;
+				}
+			}
 			
 			if (transform.position.y<-4)
-			{yspeed=-yspeed;}
+			{
+				if(yspeed < 0)
+				{
+					yspeed=-yspeed;
+				}
+			}
 
 			transform.RotateAround(Vector3.zero, Vector3.up,clockWise * wspeed * Time.deltaTime);
 			transform.Translate(Vector3.up * yspeed * Time.deltaTime,Space.World);
@@ -1272,25 +1318,70 @@ public class HatateParent : MonoBehaviour {
 			}
 			else
 			{
-				if(state == 9)
-					finish_take_hit = true;
-
-				hatate.GetComponent<Boss1_3>().triggerEnding();
-				hatate.GetComponent<Boss1_3>().playOneShot(NORMAL_END);
-				invincible=true;
-
 				switch(state)
 				{
 
-					case 1:{finish3_1_1 = true;}break;
-					case 2:{finish3_1_2 = true;}break;
-					case 3:{finish3_2_1 = true;}break;
-					case 4:{finish3_2_2 = true;}break;
-					case 5:{finish3_3_1 = true;}break;
-					case 6:{finish3_3_2 = true;}break;
+				case 1:{
+						if(finish3_1_1 == false)
+						{
+							hatate.GetComponent<Boss1_3>().playOneShot(NORMAL_END);
+							finish3_1_1 = true;
+						}
+					}break;
+					case 2:{
+						if(finish3_1_2 == false)
+						{
+							hatate.GetComponent<Boss1_3>().playOneShot(SPELL_END);
+							finish3_1_2 = true;
+						}
+					}break;
+					case 3:{
+						if(finish3_2_1 == false)
+						{
+							finish3_2_1 = true;
+							hatate.GetComponent<Boss1_3>().playOneShot(NORMAL_END);
+						}
+					}break;
+					case 4:{
+						if(finish3_2_2 == false){
+							hatate.GetComponent<Boss1_3>().playOneShot(SPELL_END);
+							finish3_2_2 = true;
+						}
+					}break;
+					case 5:{
+						if(finish3_3_1 == false)
+						{
+							finish3_3_1 = true;
+							hatate.GetComponent<Boss1_3>().playOneShot(NORMAL_END);
+						}
+					}break;
+					case 6:{
+						if(finish3_3_2 == false){
+							finish3_3_2 = true;
+							hatate.GetComponent<Boss1_3>().playOneShot(SPELL_END);
+						}
+					}break;
 					case 7:{finish3_4_1 = true;}break;
-					case 8:{finish3_4_2 = true;}break;
-					
+					case 8:{
+						if(finish3_4_2 == false){
+							finish3_4_2 = true;
+							hatate.GetComponent<Boss1_3>().playOneShot(SPELL_END);
+						}
+					}break;
+					case 9:{
+						if(finish_take_hit == false)
+						{
+							hatate.GetComponent<Boss1_3>().triggerEnding();
+							hatate.GetComponent<Boss1_3>().playOneShot(BOSS_END);
+							invincible=true;
+							finish_take_hit = true;
+						}
+
+							
+							
+							
+							}break;
+
 					default:{print("apply damage hp = 0 called");}break;
 
 				}

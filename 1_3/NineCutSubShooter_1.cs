@@ -22,8 +22,6 @@ public class NineCutSubShooter_1 : shooterbasic
 		bt2[6]=Resources.Load("bt2_w",typeof(GameObject)) as GameObject;
 		bt2[7]=Resources.Load("bt2_y",typeof(GameObject)) as GameObject;
 
-
-
 	}
 
 	public override IEnumerator mainroute ()
@@ -44,7 +42,7 @@ public class NineCutSubShooter_1 : shooterbasic
 
 
 				if(i == 7) i=0;
-				else {i++;if(i%3==0)audio.Play();}
+				else {i++;if(i%2==0)audio.Play();}
 
 				yield return new WaitForSeconds(0.3f);
 			}
@@ -59,7 +57,7 @@ public class NineCutSubShooter_1 : shooterbasic
 
 
 				if(i == 7) i=0;
-				else {i++;if(i%3==0)audio.Play();}
+				else {i++;if(i%2==0)audio.Play();}
 
 				yield return new WaitForSeconds(0.3f);
 			}

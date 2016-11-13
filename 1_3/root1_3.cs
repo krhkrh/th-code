@@ -6,6 +6,7 @@ public class root1_3 : MonoBehaviour {
 	public GameObject player;
 	public GameObject manager;
 	public GameObject boss;
+	GameObject hatateParent;
 	public GameObject textlist;
 	public GameObject cam;
 	public AudioClip[] clips;
@@ -257,6 +258,13 @@ public class root1_3 : MonoBehaviour {
 		}
 
 		StartCoroutine(route3_conversation_2());
+
+		while(conversationend == false)
+		{
+			yield return new WaitForSeconds(0.5f);
+		}
+
+		hatateParent.GetComponent<HatateParent>().setYspeed(-2.5f);
 
 		//then create the statge 4;
 
@@ -533,11 +541,11 @@ public class root1_3 : MonoBehaviour {
 	{
 		//set conversation
 		int i=1,j=0;
-		player.SendMessage("setconversationmode",true,SendMessageOptions.DontRequireReceiver);
-
+		conversationend = false;
+		player.GetComponent<Control>().setControlEnabled(false);
 		GameObject bb;
 		GameObject hatateCam;
-		Vector3 initPosition =  getPlayerXYVector(player.transform)+Vector3.up*7;
+		Vector3 initPosition = getPlayerXYVector(player.transform)+Vector3.up*19;
 		Vector3 minusYInitPosition =  getPlayerXYVector(player.transform)+Vector3.down*7;
 
 		bb = (GameObject)Instantiate (boss, initPosition, Quaternion.LookRotation(minusYInitPosition));
@@ -558,6 +566,9 @@ public class root1_3 : MonoBehaviour {
 
 
 		manager.SendMessage("findboss",SendMessageOptions.DontRequireReceiver);
+
+		yield return new WaitForSeconds(3.0f);
+		player.SendMessage("setconversationmode",true,SendMessageOptions.DontRequireReceiver);
 		while(i<22&&!skip)
 		{
 			manager.SendMessage("setdisplay",3.5f,SendMessageOptions.DontRequireReceiver);
@@ -575,7 +586,7 @@ public class root1_3 : MonoBehaviour {
 		manager.SendMessage("skipconversation1",SendMessageOptions.DontRequireReceiver);
 
 		bb.SendMessage("setstate",1,SendMessageOptions.DontRequireReceiver);
-
+		hatateParent = bb;
 		player.SendMessage("setconversationmode",false,SendMessageOptions.DontRequireReceiver);
 		yield return new WaitForSeconds(1.0f);
 		
@@ -584,6 +595,7 @@ public class root1_3 : MonoBehaviour {
 	IEnumerator route3_conversation_2()
 	{
 		skip=false;
+		conversationend = false;
 		//TODO:set conversation starting number
 		int i=1,j=0;
 		player.SendMessage("setconversationmode",true,SendMessageOptions.DontRequireReceiver);

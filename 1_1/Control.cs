@@ -390,6 +390,11 @@ public class Control : MonoBehaviour {
 		lrdisabled=t;
 	}
 
+	public void setControlEnabled(bool enab)
+	{
+		lrdisabled = enab;
+	}
+
 	void applydamage(int d)
 	{
 		switch(condition)
