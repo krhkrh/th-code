@@ -79,7 +79,7 @@ public class root1_3 : MonoBehaviour {
 			
 		};
 
-	//	root1_4= Resources.Load(,typeof(GameObject)) as GameObject;
+		root1_4= Resources.Load("root1_4",typeof(GameObject)) as GameObject;
 		boss= Resources.Load("hatate_parent",typeof(GameObject)) as GameObject;
 		conversationmanager1_3= Resources.Load("conversationmanager1_3",typeof(GameObject)) as GameObject;
 		shooter2 = Resources.Load("shooter2", typeof(GameObject)) as GameObject;
@@ -122,35 +122,7 @@ public class root1_3 : MonoBehaviour {
 	{
 		audio.mute=false;
 	}
-
-
-	IEnumerator endstage3()
-	{
-		boss.SendMessage("clear",SendMessageOptions.DontRequireReceiver);
-		while(boss.transform.position.y>-5)
-		{
-			audio.volume*=0.5f;
-			yield return new WaitForSeconds(1.0f);
-		}
-	}
 	
-	IEnumerator createnext()
-	{
-		
-		yield return new WaitForSeconds(1.0f);
-		GameObject bb;
-		bb = (GameObject) Instantiate(root1_4,Vector3.zero,Quaternion.identity);
-		yield return new WaitForSeconds(1.0f);
-		manager.SendMessage("halt",SendMessageOptions.DontRequireReceiver);
-		player.SendMessage("changeroot",bb,SendMessageOptions.DontRequireReceiver);
-		while(boss.transform.position.y>-5)
-		{
-			yield return new WaitForSeconds(1.0f);
-		}
-		Destroy(boss);
-		Destroy(gameObject);
-	}
-
 	IEnumerator maincoroutine ()
 	{
 
@@ -248,7 +220,7 @@ public class root1_3 : MonoBehaviour {
 			yield return new WaitForSeconds(1.0f);
 		}
 
-		audio.volume=volume;*/
+		audio.volume=volume;
 
 		StartCoroutine(route3_conversation_1());
 
@@ -264,11 +236,34 @@ public class root1_3 : MonoBehaviour {
 			yield return new WaitForSeconds(0.5f);
 		}
 
-		hatateParent.GetComponent<HatateParent>().setYspeed(-2.5f);
-
-		//then create the statge 4;
-
+		hatateParent.GetComponent<HatateParent>().setYspeed(-4.5f);
+		while(hatateParent.transform.position.y>0s)
+		{
+			
+			if(audio.volume < 0.1f)
+				audio.volume = 0;
+			else
+				audio.volume*=0.5f;
+			yield return new WaitForSeconds(1.0f);
+		}
+*/
+		StartCoroutine(createnext());
 	}
+
+	IEnumerator createnext()
+	{
+
+		GameObject bb;
+		bb = (GameObject) Instantiate(root1_4,Vector3.zero,Quaternion.identity);
+		yield return new WaitForSeconds(1.0f);
+		
+		manager.GetComponent<conversationmanager1_3>().halt();
+		player.GetComponent<Control>().changeroot(bb);
+		yield return new WaitForSeconds(1.0f);
+
+		Destroy(gameObject);
+	}
+
 
 	Vector3 getXZhorizontal(Transform t)
 	{

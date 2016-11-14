@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class conversationmanager1_3 : MonoBehaviour {
+
 
 	public Texture[] person1;
 	public Texture[] person2;
@@ -26,52 +27,26 @@ public class conversationmanager1_3 : MonoBehaviour {
 	public GameObject player;
 	public GameObject boss;
 
-	void setdisplay(float t)
+	
+
+	public void setPlayer(GameObject bb)
 	{
-		display=true;
-		StartCoroutine(fdisplay(t));
+		player = bb;
+		if(boss == null)
+			boss = player;
 	}
 
-	IEnumerator fdisplay(float t)
+	public void setBoss(GameObject bb)
 	{
-		yield return new WaitForSeconds(t);
-		if(display)
-		{
-			//display=false;
-			close=true;
-		}
+		boss=bb;
 	}
 
-	public void skipconversation1()
-	{
-		display = false;
-		textnumber = 22;
-		p1=7;p2=14;
-	}
-
-	public void skipconversation2()
-	{
-		display = false;
-	}
-
-	void Awake()
-	{
-		player=GameObject.FindGameObjectWithTag("Player");
-		boss=player;
-		//boss=GameObject.FindGameObjectWithTag("boss");
-		
-	}
-
-	void findboss()
-	{
-		boss=GameObject.FindGameObjectWithTag("bossParent");//test
-	}
-
-	void OnGUI()
+void OnGUI()
 	{
 		if(display)
 		{
-			
+		//samples here 
+		//make sure the plot speech	
 			switch(textnumber)
 			{
 				case 1:
@@ -90,99 +65,14 @@ public class conversationmanager1_3 : MonoBehaviour {
 				{
 					dialog(1,2);
 				}break;
-			
-			
-			
-				case 5:
-				{
-					dialog(2,0);
-				}break;case 6:
-				{
-					dialog(2,1);
-				}break;case 7:
-				{
-					dialog(1,2);
-				}break;case 8:
-				{
-					dialog(2,3);
-				}break;
-			
-			
-				case 9:
-				{
-					dialog(2,4);
-				}break;case 10:
-				{
-					dialog(2,0);
-				}break;case 11:
-				{
-					dialog(2,2);
-				}break;case 12:
-				{
-					dialog(1,2);
-				}break;
-			
-			
-				case 13:
-				{
-					dialog(2,4);
-				}break;case 14:
-				{
-					dialog(2,4);
-				}break;
-				case 15:
-				{
-					dialog(1,2);
-				}break;
-				case 16:
-				{
-					dialog(2,4);
-				}break;
-
-
-				case 17:
-				{
-					dialog(2,6);
-				}break;case 18:
-				{
-					dialog(2,1);
-				}break;case 19:
-				{
-					dialog(1,6);
-				}break;case 20:
-				{
-					dialog(2,3);
-				}break;
-
-				case 21:
-				{
-					dialog(1,4);
-				}break;case 22:
-				{
-					dialog(1,4);
-				}break;case 23:
-				{
-					dialog(2,5);
-				}break;case 24:
-				{
-					dialog(1,2);
-				}break;
-
-				case 25:
-				{
-					dialog(1,2);
-				}break;
-
-				case 26:
-				{
-					dialog(1,99);
-				}break;
 			}
 			
 		}
 	}
-	
-		void dialog(int speaker,int imagecode)
+
+
+
+void dialog(int speaker,int imagecode)
 		{
 			if(!close)
 			{
@@ -313,13 +203,11 @@ public class conversationmanager1_3 : MonoBehaviour {
 	{
 		Destroy(gameObject);
 	}
-	// Use this for initialization
-	void Start () {
 	
-	}
+	void Awake() {}
+
+	void Start () {}
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+	void Update () {}
+
 }

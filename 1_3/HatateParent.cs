@@ -204,7 +204,7 @@ public class HatateParent : MonoBehaviour {
 	{
 		while(yspeed > y)
 		{
-			yspeed -= 0.2f;
+			yspeed -= 0.4f;
 			yield return new WaitForSeconds(0.4f);
 		}
 
