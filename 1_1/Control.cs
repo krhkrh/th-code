@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class Control : MonoBehaviour {
@@ -488,7 +488,7 @@ public class Control : MonoBehaviour {
 		}
 	}
 
-	void changeroot(GameObject r)
+	public void changeroot(GameObject r)
 	{
 		root=r;
 	}

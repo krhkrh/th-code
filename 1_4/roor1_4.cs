@@ -33,7 +33,7 @@ public class root1_4 : MonoBehaviour {
 	GameObject root1_5;
 
 	
-	GameObject shooter2;
+	GameObject shooter2; 
 	GameObject shooter3;
 	GameObject b3_v;
 	GameObject b3_i;
